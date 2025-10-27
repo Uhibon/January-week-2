@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Booha 50 – January Week 1</title>
+<meta name="theme-color" content="#0b1530" />
+<link rel="icon" type="image/png" href="booha-ghost.png" />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --radius:28px;
+  --deep:#0b1530;
+}
+
+/* Base */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  height:100%;
+  background:radial-gradient(1200px 800px at 50% -10%,#1e2a55 0%,#0f1a3d 40%,#0b1530 100%);
+  color:#fff;
+  font-family:system-ui,Segoe UI,Roboto,Inter,sans-serif;
+  overflow-x:hidden;
+}
+.wrapper{
+  min-height:100%;
+  display:flex;flex-direction:column;align-items:center;
+  gap:12px;justify-content:flex-start;
+  padding:56px 10px 84px;
+}
+
+/* Back to menu */
+.back{
+  position:fixed;left:10px;top:10px;z-index:1000;
+  padding:10px 14px;border-radius:999px;
+  border:1px solid #2f3b7a;background:#0c1440;color:#fff;
+  font-weight:800;text-decoration:none;
+  box-shadow:0 0 18px rgba(124,58,237,.25);
+  transition:transform .15s ease
+}
+.back:hover{transform:translateY(-1px)}
+.back:active{transform:scale(.97)}
+
+/* Header */
+header{text-align:center;line-height:1.15}
+header .line1{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(30px,5.2vw,62px)}
+header .line2{margin-top:6px;font-family:'Cinzel',serif;font-weight:800;font-size:clamp(22px,3.6vw,34px)}
+header .line3{margin-top:2px;font-family:'Cinzel',serif;font-weight:700;font-size:clamp(18px,3.6vw,28px);opacity:.95}
+
+/* Mode tabs */
+.modes{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin:14px 0 8px}
+.modes .tab{
+  background:#0d1b4a;border:1px solid #2b3f8a;border-radius:14px;color:#e6e9ff;
+  font-weight:900;padding:12px 16px;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,.35);
+  transition:transform .12s ease;font-size:clamp(14px,2.6vw,18px)
+}
+.modes .tab:hover{transform:translateY(-1px)}
+.modes .tab.active[data-num="1"]{background:#ff7eb9;color:#3a0630}
+.modes .tab.active[data-num="2"]{background:#8aff80;color:#062614}
+.modes .tab.active[data-num="3"]{background:#fff680;color:#3a3206}
+.modes .tab.active[data-num="4"]{background:#c77dff;color:#1f0b2c}
+
+/* Stage + Card */
+.stage{display:flex;flex-direction:column;align-items:center;gap:18px;padding:6px 12px;width:100%}
+
+.card-outer{width:min(92vw,900px);aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;perspective:1000px;}
+.card{
+  width:100%;height:100%;border-radius:var(--radius);
+  border:3px solid rgba(255,255,255,.25);
+  box-shadow:0 30px 80px rgba(0,0,0,.3);
+  overflow:hidden;
+  background-size:100% 240px;
+  animation:stripeDown 6s linear infinite;
+  position:relative;
+}
+@keyframes stripeDown{0%{background-position:0 0;}100%{background-position:0 240px;}}
+
+.face{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  border-radius:var(--radius);transition:opacity .5s ease,transform .6s ease;
+}
+.face.hidden{opacity:0;transform:scale(0.98);}
+.face.visible{opacity:1;transform:scale(1);}
+
+/* Font scaling by mode */
+.term h2{
+  margin:0;font-weight:900;line-height:1.1;color:#000;
+  text-shadow:0 0 6px rgba(255,255,255,.9),0 0 18px rgba(255,255,255,.6);
+}
+.term p{
+  margin-top:.7rem;font-weight:700;color:#000;
+  text-shadow:0 0 4px rgba(255,255,255,.8),0 0 12px rgba(255,255,255,.5);
+}
+
+/* Vocabulary: perfect size */
+body[data-mode="vocab"] .term h2{font-size:clamp(52px,10vw,120px);}
+body[data-mode="vocab"] .term p{font-size:clamp(30px,5.5vw,48px);}
+
+/* Sentences: slightly smaller */
+body[data-mode="sentences"] .term h2{font-size:clamp(38px,7vw,82px);}
+body[data-mode="sentences"] .term p{font-size:clamp(26px,4.8vw,38px);}
+
+/* Questions: slightly smaller */
+body[data-mode="questions"] .term h2{font-size:clamp(36px,6.5vw,76px);}
+body[data-mode="questions"] .term p{font-size:clamp(24px,4.6vw,36px);}
+
+/* Sparkles */
+.sparkle{
+  position:absolute;width:6px;height:6px;border-radius:50%;
+  background:radial-gradient(circle,#fff8b0 0%,#ffd700 40%,transparent 70%);
+  opacity:.95;pointer-events:none;animation:sparkleFloat 2.3s ease-out forwards;filter:blur(.5px)
+}
+@keyframes sparkleFloat{0%{transform:translateY(0) scale(1);opacity:1;}60%{opacity:.9;}100%{transform:translateY(-200px) scale(.5);opacity:0}}
+
+/* Controls */
+.controls{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn{
+  padding:14px 18px;border-radius:16px;border:1px solid #e5e7eb;background:linear-gradient(180deg,#fff,#eaeaea);
+  font-weight:900;color:#111;cursor:pointer;font-size:clamp(16px,3.2vw,20px);
+  box-shadow:0 12px 28px rgba(0,0,0,.28);transition:transform .12s ease
+}
+.btn:hover{transform:translateY(-1px)}
+#speakBtn{
+  background:linear-gradient(180deg,#ff4444,#cc0000);color:#fff;border:none;
+  box-shadow:0 0 22px rgba(255,0,0,.35);font-size:clamp(20px,4vw,24px)
+}
+
+/* Quiz */
+.quiz-wrap{width:min(94vw,900px);background:#0b1030;border:1px solid #2a3575;border-radius:18px;
+padding:20px;box-shadow:0 24px 70px rgba(0,0,0,.45);position:relative;overflow:hidden}
+.qtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.qprog,.score{font-weight:900;font-size:clamp(16px,2.8vw,20px)}
+.q{background:#0f1544;border:1px solid #2a3575;border-radius:14px;padding:18px}
+.q h3{font-size:clamp(24px,4vw,36px);margin-bottom:12px}
+.opts{display:grid;gap:14px;margin:14px 0}
+.opt{
+  background:#0d133a;border:2px solid #2a3575;border-radius:14px;padding:18px;
+  color:#e9ecff;font-weight:900;font-size:clamp(18px,3.2vw,26px);cursor:pointer;
+  transition:transform .08s ease, box-shadow .15s ease; background-clip:padding-box
+}
+.opt:hover{transform:translateY(-1px)}
+.opt.correct{border-color:#22c55e;background:#0f2a1a}
+.opt.wrong{border-color:#ef4444;background:#2a1111}
+.explain{margin-top:12px;color:#d7ddff;font-size:clamp(14px,2.4vw,18px)}
+.hidden{display:none}
+
+/* Quiz nav */
+.qnav{display:flex;justify-content:flex-end;margin-top:12px}
+#nextQ{
+  padding:10px 14px;border-radius:12px;border:1px solid #e5e7eb;background:linear-gradient(180deg,#fff,#eaeaea);
+  font-weight:900;color:#111;cursor:pointer;font-size:clamp(14px,2.8vw,16px);
+  box-shadow:0 8px 18px rgba(0,0,0,.25);transition:transform .12s ease
+}
+#nextQ:hover{transform:translateY(-1px)}
+
+/* Small rainbow confetti */
+.confetto{
+  position:fixed;width:6px;height:7px;opacity:1;will-change:transform,opacity;
+  border-radius:2px;transform:translate3d(0,0,0) rotate(0deg);pointer-events:none;z-index:2000
+}
+
+footer{position:fixed;bottom:14px;left:0;right:0;text-align:center;
+color:#d1d5db;font-family:'Cinzel',serif;font-size:clamp(14px,2.4vw,18px);opacity:.9}
+</style>
+</head>
+<body data-mode="vocab">
+<a href="#" class="back" id="backMenu">⟵ Back to Menu</a>
+
+<div class="wrapper">
+  <header>
+    <div class="line1">The Boo-riculum</div>
+    <div class="line2">January Week 1 : 50 Deck</div>
+    <div class="line3">１月第１週 : 50デック</div>
+  </header>
+
+  <div class="modes" id="modes">
+    <button class="tab active" data-num="1" data-mode="vocab">① Vocabulary 語彙 (20)</button>
+    <button class="tab" data-num="2" data-mode="sentences">② Sentences 文 (20)</button>
+    <button class="tab" data-num="3" data-mode="questions">③ Questions 質問 (20)</button>
+    <button class="tab" data-num="4" data-mode="quiz">④ Quiz クイズ (20)</button>
+  </div>
+
+  <!-- Card Stage -->
+  <section class="stage" id="cardsStage">
+    <div class="card-outer">
+      <article class="card" id="card">
+        <div id="sparkleContainer"></div>
+        <div class="face visible" id="frontFace"><div class="term"><h2 id="frontTitle"></h2></div></div>
+        <div class="face hidden" id="backFace"><div class="term"><h2 id="backTitle"></h2><p id="backSub"></p></div></div>
+      </article>
+    </div>
+
+    <div class="controls">
+      <button class="btn" id="prevBtn">❮ Prev</button>
+      <button class="btn" id="flipBtn">Flip ⤾</button>
+      <button class="btn" id="nextBtn">Next ❯</button>
+      <button class="btn" id="speakBtn">▶</button>
+    </div>
+  </section>
+
+  <!-- Quiz Stage -->
+  <section class="stage hidden" id="quizStage">
+    <div class="quiz-wrap">
+      <div class="qtop"><div class="qprog" id="qprog">1 / 20</div><div class="score" id="score">Score: 0</div></div>
+      <div class="q" id="qbox">
+        <h3 id="qtext"></h3>
+        <div class="opts" id="opts"></div>
+        <div class="explain" id="explain"></div>
+        <div class="qnav"><button id="nextQ">Next ❯</button></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer>Bryan's English School</footer>
+
+<script>
+/* Vivid rotating palettes */
+const PALETTES=[
+  ["#ff007f","#00c3ff","#ffe600","#39ff14","#8b00ff","#ff4d4d"],
+  ["#ff4b1f","#1fddff","#f9ed69","#00ff9c","#d16ba5","#8ef6e4"],
+  ["#ff6ec7","#5ee6ff","#fff680","#a6f7b2","#c77dff","#7dd3fc"],
+  ["#ff9f00","#ff00a6","#00ffe1","#ffee00","#00d9ff","#ff6b6b"],
+  ["#ff5f6d","#ffc371","#00c9ff","#92fe9d","#a890fe","#fbc8d4"]
+];
+
+/* Build animated candy stripes */
+function buildStripeBackground(colors){
+  const band=40; let stops=[];
+  colors.forEach((c,idx)=>{const start=idx*band;stops.push(`${c} ${start}px ${start+band}px`);});
+  const all=stops.concat(stops.map(s=>s.replace(/(\d+)px/g,(m,n)=>(parseInt(n)+band*colors.length)+'px')));
+  return `repeating-linear-gradient(180deg,${all.join(',')})`;
+}
+
+/* Sparkles when audio plays */
+const sparkContainer=document.getElementById("sparkleContainer");
+function triggerSparkles(){
+  for(let n=0;n<35;n++){
+    const s=document.createElement("div");
+    s.className="sparkle";
+    s.style.left=Math.random()*100+"%";
+    s.style.bottom=Math.random()*60+"%";
+    s.style.transform=`scale(${0.6+Math.random()*1.4})`;
+    s.style.animationDelay=(Math.random()*0.3)+"s";
+    sparkContainer.appendChild(s);
+    setTimeout(()=>s.remove(),2300);
+  }
+}
+
+/* Local audio — preload & check all folders */
+const audioFolders = ["assets/vocab", "assets/sentences", "assets/questions", "assets/audio"];
+const audioCache = {};
+
+/* Preload all mp3 files in known folders */
+window.addEventListener("DOMContentLoaded", () => {
+  audioFolders.forEach(folder => {
+    fetch(folder) // try to read folder listing (works on live servers)
+      .then(() => {
+        // Preload a few common names if known
+        // If you know the file list, you can loop it here later
+      })
+      .catch(() => {}); // ignore if folder isn't public-listable
+  });
+});
+
+/* Speak function */
+function speak(text){
+  if(!text) return;
+  const filename = text.toLowerCase().replace(/[^a-z0-9ぁ-んァ-ン一-龯]/g,"") + ".mp3";
+
+  // If already preloaded, play instantly
+  if(audioCache[filename]){
+    audioCache[filename].currentTime = 0;
+    audioCache[filename].play().then(()=>triggerSparkles());
+    return;
+  }
+
+  // Otherwise, search each folder and cache the first that works
+  (async () => {
+    for(const folder of audioFolders){
+      const path = `${folder}/${filename}`;
+      const a = new Audio(path);
+      try{
+        await a.play();
+        triggerSparkles();
+        audioCache[filename] = a; // cache for next time
+        return;
+      }catch{
+        // try next folder
+      }
+    }
+    // retry after small delay if not ready
+    setTimeout(()=>speak(text), 500);
+  })();
+}
+
+
+/* Small rainbow confetti (on correct quiz answers) */
+const CONFETTI_COLORS=["#ff004d","#ff7ab6","#ffd300","#00e6ff","#7cff6b","#c77dff","#ff8e00","#00d1b2"];
+function burstConfetti(x=window.innerWidth/2, y=window.innerHeight/2){
+  const N=28;
+  for(let i=0;i<N;i++){
+    const d=document.createElement("div");
+    d.className="confetto";
+    d.style.background=CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+    const size = 4 + Math.random()*4;
+    d.style.width = size + "px";
+    d.style.height = (size*1.1) + "px";
+    d.style.left = x + "px";
+    d.style.top  = y + "px";
+    const angle = Math.random()*2*Math.PI;
+    const velocity = 6 + Math.random()*12;
+    const dx = Math.cos(angle)*velocity;
+    const dy = Math.sin(angle)*velocity - 6;
+    const rot = (Math.random()*540-270);
+    d.style.transition = "transform 700ms cubic-bezier(.2,.8,.2,1), opacity 800ms ease-out";
+    requestAnimationFrame(()=>{
+      d.style.transform = `translate(${dx*12}px, ${dy*14}px) rotate(${rot}deg)`;
+      d.style.opacity = 0;
+    });
+    document.body.appendChild(d);
+    setTimeout(()=>d.remove(),900);
+  }
+}
+
+/* --- Content (20/20/20) --- */
+const VOCAB=[{en:"goal",jp:"目標",hira:"もくひょう"},
+{en:"plan",jp:"計画",hira:"けいかく"},
+{en:"resolution",jp:"決意",hira:"けつい"},
+{en:"habit",jp:"習慣",hira:"しゅうかん"},
+{en:"routine",jp:"日課",hira:"にっか"},
+{en:"schedule",jp:"予定",hira:"よてい"},
+{en:"deadline",jp:"締め切り",hira:"しめきり"},
+{en:"progress",jp:"進歩",hira:"しんぽ"},
+{en:"effort",jp:"努力",hira:"どりょく"},
+{en:"focus",jp:"集中",hira:"しゅうちゅう"},
+{en:"motivation",jp:"やる気",hira:"やるき"},
+{en:"challenge",jp:"挑戦",hira:"ちょうせん"},
+{en:"success",jp:"成功",hira:"せいこう"},
+{en:"mistake",jp:"間違い",hira:"まちがい"},
+{en:"improve",jp:"上達する",hira:"じょうたつする"},
+{en:"practice",jp:"練習",hira:"れんしゅう"},
+{en:"exercise",jp:"運動",hira:"うんどう"},
+{en:"study",jp:"勉強",hira:"べんきょう"},
+{en:"promise",jp:"約束",hira:"やくそく"},
+{en:"reward",jp:"ごほうび",hira:"ごほうび"}];
+
+const SENTENCES=[{en:"I will study every day.",jp:"毎日勉強します。",hira:"まいにち べんきょう します"},
+{en:"I’m going to try something new.",jp:"新しいことに挑戦します。",hira:"あたらしい こと に ちょうせん します"},
+{en:"I will do my best this year.",jp:"今年は全力を尽くします。",hira:"ことし は ぜんりょく を つくし ます"},
+{en:"I will make a new friend.",jp:"新しい友だちを作ります。",hira:"あたらしい ともだち を つくり ます"},
+{en:"I will not be late anymore.",jp:"もう遅刻しません。",hira:"もう ちこく しません"},
+{en:"I will help my classmates.",jp:"クラスメイトを手伝います。",hira:"クラスメイト を てつだい ます"},
+{en:"I will clean my desk today.",jp:"今日は机を片づけます。",hira:"きょう は つくえ を かたづけ ます"},
+{en:"I will read more books.",jp:"もっと本を読みます。",hira:"もっと ほん を よみ ます"},
+{en:"I will start a good habit.",jp:"良い習慣を始めます。",hira:"よい しゅうかん を はじめ ます"},
+{en:"I will speak more English.",jp:"もっと英語を話します。",hira:"もっと えいご を はなし ます"},
+{en:"I will write in my diary every week.",jp:"毎週日記を書きます。",hira:"まいしゅう にっき を かき ます"},
+{en:"I will wake up earlier.",jp:"もっと早く起きます。",hira:"もっと はやく おき ます"},
+{en:"I will listen carefully in class.",jp:"授業でしっかり聞きます。",hira:"じゅぎょう で しっかり きき ます"},
+{en:"I will smile more.",jp:"もっと笑います。",hira:"もっと わらい ます"},
+{en:"I will enjoy learning.",jp:"学ぶことを楽しみます。",hira:"まなぶ こと を たのしみ ます"},
+{en:"I’m going to join a club this semester.",jp:"今学期はクラブに入るつもりです。",hira:"こんがっき は くらぶ に はいる つもり です"},
+{en:"I’m meeting my friend to plan our goals.",jp:"友だちと目標を計画するために会います。",hira:"ともだち と もくひょう を けいかく する ため に あい ます"},
+{en:"By March, I will have read five books.",jp:"３月までに本を５冊読んでいるつもりです。",hira:"さんがつ まで に ほん を ごさつ よんで いる つもり です"},
+{en:"I might start running on weekends.",jp:"週末に走り始めるかもしれません。",hira:"しゅうまつ に はしり はじめる かも しれません"},
+{en:"I have decided to keep a study journal.",jp:"勉強ノートを続けることに決めました。",hira:"べんきょう のーと を つづける こと に きめました"}];
+
+const QUESTIONS=[{en:"What goal will you set this month?",jp:"今月はどんな目標を立てますか。",hira:"こんげつ は どんな もくひょう を たてます か"},
+{en:"Are you going to try something new this week?",jp:"今週、新しいことに挑戦しますか。",hira:"こんしゅう あたらしい こと に ちょうせん します か"},
+{en:"When will you start your new habit?",jp:"新しい習慣はいつ始めますか。",hira:"あたらしい しゅうかん は いつ はじめ ます か"},
+{en:"How will you practice English every day?",jp:"毎日どうやって英語を練習しますか。",hira:"まいにち どうやって えいご を れんしゅう します か"},
+{en:"Who will help you reach your goal?",jp:"目標を達成するのを誰が手伝いますか。",hira:"もくひょう を たっせい する の を だれ が てつだい ます か"},
+{en:"What are you doing this weekend to improve yourself?",jp:"今週末は自分を伸ばすために何をしますか。",hira:"こんしゅうまつ は じぶん を のばす ため に なに を します か"},
+{en:"Where will you study after school today?",jp:"今日放課後はどこで勉強しますか。",hira:"きょう ほうかご は どこ で べんきょう します か"},
+{en:"Why did you choose that goal?",jp:"なぜその目標を選びましたか。",hira:"なぜ その もくひょう を えらび ました か"},
+{en:"How many books will you read this year?",jp:"今年は本を何冊読みますか。",hira:"ことし は ほん を なんさつ よみ ます か"},
+{en:"What will you stop doing to save time?",jp:"時間を節約するために何をやめますか。",hira:"じかん を せつやく する ため に なに を やめ ます か"},
+{en:"Are you going to join a club this semester?",jp:"今学期はクラブに入りますか。",hira:"こんがっき は くらぶ に はいり ます か"},
+{en:"What will you do if you make a mistake?",jp:"もし間違えたらどうしますか。",hira:"もし まちがえたら どう します か"},
+{en:"Who are you meeting to plan your goals?",jp:"目標を計画するために誰と会いますか。",hira:"もくひょう を けいかく する ため に だれ と あい ます か"},
+{en:"When are you going to start your routine?",jp:"いつ日課を始めますか。",hira:"いつ にっか を はじめ ます か"},
+{en:"What will you do better than last year?",jp:"去年より何をもっと上手にしますか。",hira:"きょねん より なに を もっと じょうず に します か"},
+{en:"How will you reward yourself?",jp:"どうやって自分にごほうびをあげますか。",hira:"どうやって じぶん に ごほうび を あげ ます か"},
+{en:"What are you not going to do this year?",jp:"今年は何をしないつもりですか。",hira:"ことし は なに を しない つもり です か"},
+{en:"How will you track your progress?",jp:"進歩をどうやって記録しますか。",hira:"しんぽ を どうやって きろく します か"},
+{en:"Which habit will be the hardest to keep?",jp:"どの習慣が一番続けにくいですか。",hira:"どの しゅうかん が いちばん つづけ にくい です か"},
+{en:"What will you learn first?",jp:"最初に何を学びますか。",hira:"さいしょ に なに を まなび ます か"}];
+
+const QUIZ=[{q:"I ___ write my goals tonight.",opts:["am going","am going to","will","going to"],a:2,ex:"Decision at the moment → will."},
+{q:"She is ___ start a diary next week.",opts:["going to","will to","go to","going"],a:0,ex:"Planned intention → going to + base."},
+{q:"We ___ late anymore.",opts:["won't be","aren't be","don't be","not be"],a:0,ex:"Negative future of be → won't be."},
+{q:"What are you ___ this weekend?",opts:["do","doing","did","done"],a:1,ex:"Present continuous for near-future plan."},
+{q:"By March, I ___ five books.",opts:["will read","am read","will have read","have read"],a:2,ex:"Future perfect."},
+{q:"He is ___ to join the basketball club.",opts:["going to","is going","will","to going"],a:0,ex:"be + going to + verb."},
+{q:"I think she ___ enjoy the class.",opts:["is going to","going","am going to","are going"],a:0,ex:"Prediction → going to."},
+{q:"I promise I ___ my best.",opts:["will do","am doing","going to do","do"],a:0,ex:"Promises → will."},
+{q:"What time ___ you start your new routine?",opts:["are","do","will","did"],a:2,ex:"Future question → will."},
+{q:"He ___ coffee every morning.",opts:["will drink","drinks","is drinking","going to drink"],a:1,ex:"Habit → simple present."},
+{q:"I ___ help you after school.",opts:["am going to","go to","am going","be going"],a:0,ex:"Intention already decided."},
+{q:"They ___ a mistake if they rush.",opts:["will make","are making","make","going to make"],a:0,ex:"Future result → will."},
+{q:"Where ___ you study today?",opts:["are","do","will","is"],a:2,ex:"Future plan question → will."},
+{q:"She ___ late because she set an alarm.",opts:["won't be","isn't being","doesn't be","isn't"],a:0,ex:"Future negative of be."},
+{q:"I ___ a good habit this month.",opts:["start","am starting","will starting","to start"],a:1,ex:"Present continuous for planned future."},
+{q:"If I have time, I ___ read more.",opts:["am going to","will","going","am"],a:1,ex:"Conditional → will."},
+{q:"We ___ our goals on Sunday.",opts:["discuss","are going to discuss","will discussing","going to discuss"],a:1,ex:"going to + base."},
+{q:"___ you join any club this year?",opts:["Do","Did","Will","Are"],a:2,ex:"Will you…?"},
+{q:"I’m not sure, but I ___ start running.",opts:["will","am","am going to","might"],a:3,ex:"Modal of possibility."},
+{q:"By the end of the week, she ___ her desk.",opts:["will tidy","will have tidied","is tidying","has tidy"],a:1,ex:"Future perfect."}];
+
+/* Helpers */
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+let MODE="vocab",idx=0,showBack=false,score=0,qIndex=0,firstAttempt=true,gotIt=false;
+
+const card=document.getElementById('card'),
+      frontFace=document.getElementById('frontFace'),
+      backFace=document.getElementById('backFace'),
+      frontTitle=document.getElementById('frontTitle'),
+      backTitle=document.getElementById('backTitle'),
+      backSub=document.getElementById('backSub'),
+      cardsStage=document.getElementById('cardsStage'),
+      quizStage=document.getElementById('quizStage'),
+      qprog=document.getElementById('qprog'),
+      scoreEl=document.getElementById('score'),
+      qtext=document.getElementById('qtext'),
+      opts=document.getElementById('opts'),
+      explain=document.getElementById('explain');
+
+let VOCAB_RUN=shuffle(VOCAB),SENT_RUN=shuffle(SENTENCES),QUES_RUN=shuffle(QUESTIONS),QUIZ_RUN=[];
+
+function activeList(){return MODE==="vocab"?VOCAB_RUN:MODE==="sentences"?SENT_RUN:QUES_RUN}
+
+function renderCard(){
+  const c=activeList()[idx];
+  const palette=PALETTES[idx % PALETTES.length]; // vivid change on every card
+  card.style.backgroundImage=buildStripeBackground(palette);
+  frontTitle.textContent=c.en;
+  backTitle.textContent=c.jp;
+  backSub.textContent=c.hira;
+  if(showBack){
+    frontFace.classList.replace("visible","hidden");
+    backFace.classList.replace("hidden","visible");
+  }else{
+    backFace.classList.replace("visible","hidden");
+    frontFace.classList.replace("hidden","visible");
+  }
+}
+
+/* Tabs */
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  MODE=b.dataset.mode;
+  document.body.setAttribute('data-mode', MODE); // ensures correct font scaling
+  idx=0; showBack=false;
+  if(MODE==="quiz"){
+    cardsStage.classList.add('hidden');
+    quizStage.classList.remove('hidden');
+    startQuiz();
+  }else{
+    quizStage.classList.add('hidden');
+    cardsStage.classList.remove('hidden');
+    renderCard();
+  }
+});
+
+/* Quiz */
+function startQuiz(){QUIZ_RUN=shuffle(QUIZ);score=0;qIndex=0;scoreEl.textContent="Score: 0";showQ();}
+function showQ(){
+  firstAttempt=true;gotIt=false;
+  const item=QUIZ_RUN[qIndex];
+  qprog.textContent=`${qIndex+1}/${QUIZ_RUN.length}`;
+  qtext.textContent=item.q;opts.innerHTML="";explain.textContent="";
+  item.opts.forEach((t,i)=>{
+    const b=document.createElement('button');
+    b.className='opt';b.textContent=t;
+    b.onclick=()=>{
+      if(gotIt) return;
+      const correct=i===item.a;
+      if(correct){
+        b.classList.add('correct');
+        gotIt=true;
+        if(firstAttempt) score++;
+        scoreEl.textContent=`Score: ${score}`;
+        explain.textContent=item.ex;
+        const r=b.getBoundingClientRect();
+        burstConfetti(r.left + r.width/2, r.top + r.height/2);
+        [...opts.children].forEach(btn=>btn.disabled=true);
+      }else{
+        b.classList.add('wrong');
+        firstAttempt=false;
+      }
+    };
+    opts.appendChild(b);
+  });
+}
+document.getElementById('nextQ').onclick=()=>{
+  if(qIndex<QUIZ_RUN.length-1){qIndex++;showQ();}
+  else{
+    qtext.textContent="Finished! Great job.";
+    opts.innerHTML="";
+    explain.innerHTML=`Your final score <b>${score}</b> / ${QUIZ.length}`;
+  }
+};
+
+/* Card controls */
+document.getElementById('flipBtn').onclick=()=>{showBack=!showBack;renderCard();}
+document.getElementById('nextBtn').onclick=()=>{idx=(idx+1)%activeList().length;showBack=false;renderCard();}
+document.getElementById('prevBtn').onclick=()=>{idx=(idx-1+activeList().length)%activeList().length;showBack=false;renderCard();}
+
+/* Audio (no quiz) */
+document.getElementById('speakBtn').onclick=()=>{
+  if(MODE==="quiz") return;
+  const c=activeList()[idx];
+  speak(showBack ? c.jp : c.en);
+};
+
+/* Back to menu */
+document.getElementById('backMenu').onclick=(e)=>{
+  e.preventDefault();
+  if(document.referrer){window.history.back();}else{window.location.href='index.html';}
+};
+
+/* Initial render */
+renderCard();
+</script>
+</body>
+</html>

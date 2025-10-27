@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>The Boo-riculum – January Week 1</title>
+<meta name="theme-color" content="#7c3aed">
+<link rel="icon" type="image/png" href="booha-ghost.png">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --radius:28px;
+  --bg:url('https://static.wixstatic.com/media/fa59b9_f8915cfdff974d7883c730f51f577d31~mv2.jpg');
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{
+  height:100%;
+  font-family:system-ui,Segoe UI,Roboto,Inter,sans-serif;
+  background:linear-gradient(160deg,rgba(124,58,237,.1),rgba(34,211,238,.1)),#0f172a;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:#111;position:relative;overflow:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;
+  background-image:var(--bg);background-size:cover;background-position:center;opacity:.25;
+}
+.back-btn{
+  position:fixed;top:14px;left:14px;z-index:1000;
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.55rem .9rem;border-radius:999px;background:#0b1020;color:#fff;
+  border:1px solid rgba(255,255,255,.25);box-shadow:0 10px 25px rgba(0,0,0,.35);
+  font-weight:800;font-size:.95rem;text-decoration:none;-webkit-tap-highlight-color:transparent;
+}
+header{text-align:center;color:#fff;margin-bottom:20px;}
+header h1{font-family:'Cinzel',serif;font-size:clamp(26px,4.5vw,50px);letter-spacing:1px;margin-bottom:10px;font-weight:900;}
+header h2{font-size:clamp(22px,3.5vw,36px);margin-bottom:6px;font-weight:800;}
+header h3{font-size:clamp(18px,3vw,30px);font-weight:600;color:#dbeafe;}
+
+.card-outer{width:min(92vw,900px);aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;perspective:1000px;}
+.card{
+  width:100%;height:100%;border-radius:var(--radius);
+  border:3px solid rgba(255,255,255,.25);
+  box-shadow:0 30px 80px rgba(0,0,0,.3);
+  overflow:hidden;
+  background-size:100% 240px;
+  animation:stripeDown 6s linear infinite;
+  position:relative;
+}
+@keyframes stripeDown{0%{background-position:0 0;}100%{background-position:0 240px;}}
+
+.face{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  border-radius:var(--radius);transition:opacity .5s ease,transform .6s ease;
+}
+.face.hidden{opacity:0;transform:scale(0.98);}
+.face.visible{opacity:1;transform:scale(1);}
+
+.term h2{
+  margin:0;font-size:clamp(52px,10vw,120px);font-weight:900;line-height:1.1;color:#000;
+  text-shadow:0 0 6px rgba(255,255,255,.9),0 0 18px rgba(255,255,255,.6);
+}
+.term p{
+  margin-top:.7rem;font-size:clamp(30px,5.5vw,48px);font-weight:700;color:#000;
+  text-shadow:0 0 4px rgba(255,255,255,.8),0 0 12px rgba(255,255,255,.5);
+}
+
+/* sparkles */
+.sparkle{
+  position:absolute;width:6px;height:6px;
+  background:radial-gradient(circle at center,#fff8b0 0%,#ffd700 40%,transparent 70%);
+  border-radius:50%;opacity:.95;pointer-events:none;z-index:2;
+  animation:sparkleFloat 2.2s ease-out forwards;filter:blur(.5px);
+}
+@keyframes sparkleFloat{0%{transform:translateY(0) scale(1);opacity:1;}60%{opacity:.9;}100%{transform:translateY(-200px) scale(.5);opacity:0;}}
+
+.actions{display:flex;gap:20px;justify-content:center;margin-top:30px;flex-wrap:wrap;}
+button.btn{
+  padding:1rem 1.3rem;border-radius:16px;border:none;background:linear-gradient(180deg,#fff,#e0e0e0);
+  box-shadow:0 10px 25px rgba(0,0,0,.15);font-weight:800;cursor:pointer;font-size:1.1rem;
+}
+#speakBtn{
+  background:linear-gradient(180deg,#ff4444,#cc0000);color:#fff;
+  font-size:1.3rem;line-height:1;
+  padding:1rem 1.5rem;border:none;border-radius:16px;
+  box-shadow:0 0 20px rgba(255,0,0,.4);
+  transition:transform .15s;
+}
+#speakBtn:hover{transform:scale(1.1);}
+footer{
+  position:fixed;bottom:18px;left:0;width:100%;
+  text-align:center;color:#d1d5db;font-family:'Cinzel',serif;
+  font-size:clamp(14px,2vw,18px);letter-spacing:1px;opacity:.9;
+}
+</style>
+</head>
+<body>
+
+<a href="#" class="back-btn" id="backMenu"><span class="arrow">❮</span> Back to Menu</a>
+
+<header>
+  <h1>The Boo-riculum</h1>
+  <h2>January Week 1</h2>
+  <h3>１月第１週</h3>
+</header>
+
+<div class="card-outer">
+  <div class="card" id="card">
+    <div id="sparkleContainer"></div>
+    <div class="face visible" id="frontFace">
+      <div class="term"><h2 id="frontTitle"></h2></div>
+    </div>
+    <div class="face hidden" id="backFace">
+      <div class="term"><h2 id="backTitle"></h2><p id="backSub"></p></div>
+    </div>
+  </div>
+</div>
+
+<div class="actions">
+  <button class="btn" id="prevBtn">❮ Prev</button>
+  <button class="btn" id="flipBtn">Flip ⤾</button>
+  <button class="btn" id="nextBtn">Next ❯</button>
+  <button id="speakBtn">▶</button>
+</div>
+
+<footer>Bryan's English School</footer>
+
+<script>
+const PALETTES=[
+  ["#ff007f","#00c3ff","#ffe600","#39ff14","#8b00ff","#ff4d4d"],
+  ["#ff4b1f","#1fddff","#f9ed69","#00ff9c","#d16ba5","#8ef6e4"],
+  ["#ff6ec7","#5ee6ff","#fff680","#a6f7b2","#c77dff","#7dd3fc"],
+  ["#ff9f00","#ff00a6","#00ffe1","#ffee00","#00d9ff","#ff6b6b"],
+  ["#ff5f6d","#ffc371","#00c9ff","#92fe9d","#a890fe","#fbc8d4"]
+];
+const CARDS=[
+  {en:"goal",jp:"目標",hira:"もくひょう"},
+  {en:"plan",jp:"計画",hira:"けいかく"},
+  {en:"future",jp:"未来",hira:"みらい"},
+  {en:"dream",jp:"夢",hira:"ゆめ"},
+  {en:"challenge",jp:"挑戦",hira:"ちょうせん"},
+  {en:"try",jp:"挑戦する",hira:"ちょうせん する"},
+  {en:"change",jp:"変える",hira:"かえる"},
+  {en:"habit",jp:"習慣",hira:"しゅうかん"},
+  {en:"exercise",jp:"運動",hira:"うんどう"},
+  {en:"study",jp:"勉強",hira:"べんきょう"},
+  {en:"learn",jp:"学ぶ",hira:"まなぶ"},
+  {en:"practice",jp:"練習",hira:"れんしゅう"},
+  {en:"success",jp:"成功",hira:"せいこう"},
+  {en:"focus",jp:"集中",hira:"しゅうちゅう"},
+  {en:"motivation",jp:"やる気",hira:"やるき"}
+];
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
+shuffle(CARDS);
+
+let i=0,showBack=false;
+const card=document.getElementById('card');
+const frontFace=document.getElementById('frontFace');
+const backFace=document.getElementById('backFace');
+const frontTitle=document.getElementById('frontTitle');
+const backTitle=document.getElementById('backTitle');
+const backSub=document.getElementById('backSub');
+const sparkContainer=document.getElementById("sparkleContainer");
+
+function buildStripeBackground(colors){
+  const band=40;let stops=[];
+  colors.forEach((c,idx)=>{const start=idx*band;stops.push(`${c} ${start}px ${start+band}px`);});
+  const all=stops.concat(stops.map(s=>s.replace(/(\d+)px/g,(m,n)=>(+n+band*colors.length)+'px')));
+  return `repeating-linear-gradient(180deg,${all.join(',')})`;
+}
+
+function triggerSparkles(){
+  for(let n=0;n<35;n++){
+    const s=document.createElement("div");
+    s.className="sparkle";
+    s.style.left=Math.random()*100+"%";
+    s.style.bottom=Math.random()*60+"%";
+    s.style.transform=`scale(${0.6+Math.random()*1.4})`;
+    s.style.animationDelay=(Math.random()*0.3)+"s";
+    sparkContainer.appendChild(s);
+    setTimeout(()=>s.remove(),2200);
+  }
+}
+
+/* Local audio — preload & check all folders */
+const audioFolders = ["assets/vocab", "assets/sentences", "assets/questions", "assets/audio"];
+const audioCache = {};
+
+/* Preload all mp3 files in known folders */
+window.addEventListener("DOMContentLoaded", () => {
+  audioFolders.forEach(folder => {
+    fetch(folder) // try to read folder listing (works on live servers)
+      .then(() => {
+        // Preload a few common names if known
+        // If you know the file list, you can loop it here later
+      })
+      .catch(() => {}); // ignore if folder isn't public-listable
+  });
+});
+
+/* Speak function */
+function speak(text){
+  if(!text) return;
+  const filename = text.toLowerCase().replace(/[^a-z0-9ぁ-んァ-ン一-龯]/g,"") + ".mp3";
+
+  // If already preloaded, play instantly
+  if(audioCache[filename]){
+    audioCache[filename].currentTime = 0;
+    audioCache[filename].play().then(()=>triggerSparkles());
+    return;
+  }
+
+  // Otherwise, search each folder and cache the first that works
+  (async () => {
+    for(const folder of audioFolders){
+      const path = `${folder}/${filename}`;
+      const a = new Audio(path);
+      try{
+        await a.play();
+        triggerSparkles();
+        audioCache[filename] = a; // cache for next time
+        return;
+      }catch{
+        // try next folder
+      }
+    }
+    // retry after small delay if not ready
+    setTimeout(()=>speak(text), 500);
+  })();
+}
+
+
+function show(){
+  const c=CARDS[i];
+  const palette=PALETTES[i%PALETTES.length];
+  card.style.backgroundImage=buildStripeBackground(palette);
+  frontTitle.textContent=c.en;
+  backTitle.textContent=c.jp;
+  backSub.textContent=c.hira;
+  if(showBack){
+    frontFace.classList.replace("visible","hidden");
+    backFace.classList.replace("hidden","visible");
+  }else{
+    backFace.classList.replace("visible","hidden");
+    frontFace.classList.replace("hidden","visible");
+  }
+}
+
+document.getElementById('flipBtn').onclick=()=>{showBack=!showBack;show();};
+document.getElementById('nextBtn').onclick=()=>{i=(i+1)%CARDS.length;showBack=false;show();};
+document.getElementById('prevBtn').onclick=()=>{i=(i-1+CARDS.length)%CARDS.length;showBack=false;show();};
+document.getElementById('speakBtn').onclick=()=>{const c=CARDS[i];speak(showBack?c.jp:c.en);};
+document.getElementById('backMenu').onclick=(e)=>{e.preventDefault();if(document.referrer)history.back();else location.href='index.html';};
+
+show();
+</script>
+</body>
+</html>
